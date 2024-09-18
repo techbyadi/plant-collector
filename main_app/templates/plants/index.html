@@ -21,6 +21,7 @@
 <section class="card-container">
   {% for plant in plants %}
     <div class="card">
+    <a href="{% url 'plant-detail' plant.id %}">
       <div class="card-content">
         <div class="card-img-container">
           <img 
@@ -32,10 +33,11 @@
         {% if plant.age > 0 %}
           <p>A {{ plant.age }} year old {{ plant.species }}</p>
         {% else %}
-          <p>A {{ cat.species }} Small Plant</p>
+          <p>A {{ plant.species }} small plant</p>
         {% endif %}
-        <p><small>{{ cat.description }}</small></p>
+        <p><small>{{ plant.description }}</small></p>
       </div>
+    </a>
     </div>
   {% endfor %}
 </section>
