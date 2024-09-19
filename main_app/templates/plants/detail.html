@@ -26,6 +26,10 @@
       <h2>A {{ plant.plant }} small plant</h2>
     {% endif %}
     <p>{{ plant.description }}</p>
+    <div class="cat-actions">
+      <a href="{% url 'plant-update' plant.id %}" class="btn warn">Edit</a>
+      <a href="{% url 'plant-delete' plant.id %}" class="btn danger">Delete</a>
+    </div>
   </div>
 </section>
 
