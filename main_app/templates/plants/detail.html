@@ -3,10 +3,20 @@
 
 {% block head %}
 <link 
+  href="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.css" 
+  rel="stylesheet" 
+/>
+<link rel="stylesheet" href="{% static 'css/mcdp.css' %}">
+<script 
+  src="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.js"
+>
+</script>
+<link 
   rel="stylesheet" 
   type="text/css" 
   href="{% static 'css/plants/plant-detail.css' %}"
 />
+<script defer src="{% static "js/plant-detail.js" %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -23,14 +33,117 @@
     {% if plant.age > 0 %}
       <h2>A {{ plant.age }} year old {{ plant.species }}</h2>
     {% else %}
-      <h2>A {{ plant.plant }} small plant</h2>
+      <h2>A {{ plant.species }} plant</h2>
     {% endif %}
     <p>{{ plant.description }}</p>
     <div class="cat-actions">
-      <a href="{% url 'plant-update' plant.id %}" class="btn warn">Edit</a>
-      <a href="{% url 'plant-delete' plant.id %}" class="btn danger">Delete</a>
+      <a href="{% url "plant-update" plant.id %}" class='btn warn'>Edit</a>
+      <a href="{% url "plant-delete" plant.id %}" class='btn danger'>Release</a>
     </div>
   </div>
 </section>
+<div class="feedings-toy-container">
+  <section class="feedings">
+    <div class="subsection-title">
+      <h2>Watering</h2>
+      <img 
+        src="{% static 'images/cat-cone.svg' %}" 
+        alt="An ice cream cone cat"
+      />
+      <img 
+        src="{% static 'images/cat-onigiri.svg' %}"
+        alt="A cat as onigiri"
+      />
+      <img 
+        src="{% static 'images/kitty-kabob.svg' %}" 
+        alt="A kabob of kittens"
+      />
+    </div>
+    <h3>Add Water</h3>
+    <form 
+      method="post"
+      class="subsection-content"
+      autocomplete="off"
+      action="{% url "add-watering" plant.id %}"
+    >
+      {% csrf_token %}
+      {% if plant.fed_for_today %}
+        <p class="fed">{{plant.name}} has been fed all their meals for today!</p>
+      {% else %}
+        <p class="unfed">{{plant.name}} might be hungry!</p>
+      {% endif %}
+      {{ watering_form.as_p }}
+      <button type="submit" class="btn submit">Add Feeding</button>
+    </form>
+    <h3>Past Feedings</h3>
+    {% if plant.watering_set.all.count %}
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          {% for watering in plant.watering.all %}
+            <tr>
+              <td>{{watering.date}}</td>
+              <td>{{watering.get_time_display}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="subsection-content">
+        <p>{{watering.name}} has never been watered 😔</p>
+      </div>
+    {% endif %}
+  </section>
+  <section class="toys">
+    <div class="subsection-title">
+      <h2>Decorations 🎄</h2>
+    </div>
+    <h3>{{ plant.name }}'s Decorations</h3>
+    <div class="subsection-content">
+
+      {% if plant.decorations.count %}
+        {% for decoration in plant.decorations.all %}
+          <div class="toy-container">
+            <div 
+              class="color-block"
+              style="background-color: {{ decoration.color }}"
+            ></div>
+            <a href="{% url 'decoration-detail' decoration.id %}">
+              <p>A {{ decoration.color }} {{ decoration.name }}</p>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="no-toys">{{plant.name}} doesn't have any decorations.</p>
+      {% endif %}
+    </div>
+    <h3>Available Decorations</h3>
+    <div class="subsection-content">
+      {% if decorations.count %}
+        {% for decoration in decorations.all %}
+          <div class="toy-container">
+            <div 
+              class="color-block"
+              style="background-color: {{ decoration.color }}"
+            ></div>
+            <a href="{% url 'decoration-detail' decoration.id %}">
+              <p>A {{ decoration.color }} {{ decoration.name }}</p>
+            </a>
+            <form action="{% url "assoc-decoration" plant.id decoration.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn submit">Add Decoration</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="all-toys">
+          {{plant.name}} already has all the available decorations! 🥳
+        </p>
+      {% endif %}
+    </div>
+  </section>
+</div>
 
 {% endblock %}

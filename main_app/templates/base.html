@@ -27,9 +27,18 @@
     </div>
     <nav>
       <ul>
+        {% if user.is_authenticated %}
         <li><a href="{% url 'plant-index' %}">All Plants</a></li>
+        <li><a href="{% url 'decoration-index' %}">All Decorations</a></li>
         <li><a href="{% url 'plant-create' %}">Add a Plant</a></li>
+        <li><a href="{% url 'decoration-create' %}">Add a Decoration</a></li>
         <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'logout' %}">Log out</a></li>
+        {% else %}
+        <li><a href="{% url 'about' %}">About</a></li>
+        <li><a href="{% url 'home' %}">Login</a></li>
+        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+      {% endif %}
       </ul>
     </nav>
   </header>
