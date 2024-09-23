@@ -45,21 +45,9 @@
 <div class="feedings-toy-container">
   <section class="feedings">
     <div class="subsection-title">
-      <h2>Watering</h2>
-      <img 
-        src="{% static 'images/cat-cone.svg' %}" 
-        alt="An ice cream cone cat"
-      />
-      <img 
-        src="{% static 'images/cat-onigiri.svg' %}"
-        alt="A cat as onigiri"
-      />
-      <img 
-        src="{% static 'images/kitty-kabob.svg' %}" 
-        alt="A kabob of kittens"
-      />
+      <h2>Watering 🌱🚿</h2>
     </div>
-    <h3>Add Water</h3>
+    <h3>Add Watering</h3>
     <form 
       method="post"
       class="subsection-content"
@@ -67,22 +55,22 @@
       action="{% url "add-watering" plant.id %}"
     >
       {% csrf_token %}
-      {% if plant.fed_for_today %}
-        <p class="fed">{{plant.name}} has been fed all their meals for today!</p>
+      {% if plant.watered_for_today %}
+        <p class="fed">{{ plant.name }} has been watered for today!</p>
       {% else %}
-        <p class="unfed">{{plant.name}} might be hungry!</p>
+        <p class="unfed">{{ plant.name }} might be thirsty!</p>
       {% endif %}
       {{ watering_form.as_p }}
-      <button type="submit" class="btn submit">Add Feeding</button>
+      <button type="submit" class="btn submit">Add Watering</button>
     </form>
-    <h3>Past Feedings</h3>
+    <h3>Past Waterings</h3>
     {% if plant.watering_set.all.count %}
       <table>
         <thead>
           <tr><th>Date</th><th>Time</th></tr>
         </thead>
         <tbody>
-          {% for watering in plant.watering.all %}
+          {% for watering in plant.watering_set.all %}
             <tr>
               <td>{{watering.date}}</td>
               <td>{{watering.get_time_display}}</td>
@@ -92,7 +80,7 @@
       </table>
     {% else %}
       <div class="subsection-content">
-        <p>{{watering.name}} has never been watered 😔</p>
+        <p>{{ plant.name }} has never been watered 😔</p>
       </div>
     {% endif %}
   </section>
@@ -102,7 +90,6 @@
     </div>
     <h3>{{ plant.name }}'s Decorations</h3>
     <div class="subsection-content">
-
       {% if plant.decorations.count %}
         {% for decoration in plant.decorations.all %}
           <div class="toy-container">
@@ -116,7 +103,7 @@
           </div>
         {% endfor %}
       {% else %}
-        <p class="no-toys">{{plant.name}} doesn't have any decorations.</p>
+        <p class="no-toys">{{ plant.name }} doesn't have any decorations.</p>
       {% endif %}
     </div>
     <h3>Available Decorations</h3>
@@ -139,7 +126,7 @@
         {% endfor %}
       {% else %}
         <p class="all-toys">
-          {{plant.name}} already has all the available decorations! 🥳
+          {{ plant.name }} already has all the available decorations! 🥳
         </p>
       {% endif %}
     </div>
